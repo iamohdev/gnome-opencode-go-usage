@@ -1,0 +1,17 @@
+{
+  "uuid": "opencode-go-usage@iamohd",
+  "name": "OpenCode Go Usage",
+  "description": "GNOME Shell extension for OpenCode Go API usage in the top panel: per-window progress bars, reset countdowns, notifications.",
+  "version": 1,
+  "version-name": "1.0.0",
+  "shell-version": [
+    "45",
+    "46",
+    "47",
+    "48",
+    "49",
+    "50"
+  ],
+  "url": "https://github.com/iamohdev/opencode-go-usage",
+  "settings-schema": "org.gnome.shell.extensions.opencode-go-usage"
+}

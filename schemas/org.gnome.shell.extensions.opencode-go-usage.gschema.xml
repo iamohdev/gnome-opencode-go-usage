@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="opencode-go-usage">
+  <schema id="org.gnome.shell.extensions.opencode-go-usage" path="/org/gnome/shell/extensions/opencode-go-usage/">
+
+    <key name="refresh-interval" type="i">
+      <default>300</default>
+      <range min="15" max="3600"/>
+      <summary>Refresh interval in seconds</summary>
+      <description>How often the extension checks usage with the OpenCode Go API.</description>
+    </key>
+
+    <key name="show-percentage" type="b">
+      <default>true</default>
+      <summary>Show the percentage in the panel</summary>
+      <description>Whether the panel indicator shows the usage percentage.</description>
+    </key>
+
+    <key name="show-countdown" type="b">
+      <default>false</default>
+      <summary>Show the time until reset in the panel</summary>
+      <description>Whether the panel indicator shows the time remaining until the displayed quota window resets (e.g. “Go 3% (3h 2m)”).</description>
+    </key>
+
+    <key name="show-label" type="b">
+      <default>true</default>
+      <summary>Show the “Go” label in the panel</summary>
+      <description>Whether the panel indicator shows the “Go” label.</description>
+    </key>
+
+    <key name="last-updated-format" type="s">
+      <default>'relative'</default>
+      <choices>
+        <choice value='relative'/>
+        <choice value='exact'/>
+      </choices>
+      <summary>How the last-updated time is shown</summary>
+      <description>Show the last refresh time as a human-readable duration (“1m ago”) or as an exact clock time (“14:32”).</description>
+    </key>
+
+    <key name="panel-mode" type="s">
+      <default>'highest'</default>
+      <choices>
+        <choice value='highest'/>
+        <choice value='rolling'/>
+        <choice value='weekly'/>
+        <choice value='monthly'/>
+      </choices>
+      <summary>Which quota window the panel reflects</summary>
+      <description>Choose the window used for the panel percentage. “Most used” shows the window closest to exhaustion.</description>
+    </key>
+
+    <key name="hidden-windows" type="as">
+      <default>[]</default>
+      <summary>Quota windows hidden from the UI</summary>
+      <description>List of quota window ids that should not be shown in the panel or popup.</description>
+    </key>
+
+    <key name="notify-at-80" type="b">
+      <default>false</default>
+      <summary>Notify when a window reaches 80%</summary>
+      <description>Show a notification when a quota window reaches 80% usage.</description>
+    </key>
+
+    <key name="notify-at-90" type="b">
+      <default>false</default>
+      <summary>Notify when a window reaches 90%</summary>
+      <description>Show a notification when a quota window reaches 90% usage.</description>
+    </key>
+
+    <key name="notify-at-100" type="b">
+      <default>false</default>
+      <summary>Notify when a window is exhausted</summary>
+      <description>Show a notification when a quota window reaches 100% usage.</description>
+    </key>
+
+    <key name="notify-state" type="s">
+      <default>'{}'</default>
+      <summary>Notification state</summary>
+      <description>Internal state used to avoid repeated notifications until a quota window resets.</description>
+    </key>
+
+    <key name="credential-revision" type="i">
+      <default>0</default>
+      <summary>Credential revision</summary>
+      <description>Incremented whenever the API key changes so the running extension reloads it.</description>
+    </key>
+
+  </schema>
+</schemalist>

@@ -1,0 +1,85 @@
+/* OpenCode Go Usage — panel and popup styling.
+   Colors for severity states are supplementary: percentages and text are
+   always shown, so the UI stays usable regardless of color. */
+
+.opencode-go-panel-box {
+    spacing: 4px;
+}
+
+.opencode-go-panel-label {
+    font-weight: 600;
+}
+
+.opencode-go-panel-percent {
+    font-weight: 600;
+}
+
+.opencode-go-panel-percent.warning {
+    color: #e5a50a;
+}
+
+.opencode-go-panel-percent.critical,
+.opencode-go-panel-percent.exhausted {
+    color: #e01b24;
+}
+
+.opencode-menu-title {
+    font-weight: 700;
+}
+
+.opencode-quota-window {
+    spacing: 3px;
+    padding: 4px 0;
+}
+
+.opencode-quota-header {
+    spacing: 12px;
+}
+
+.opencode-quota-name {
+    font-weight: 500;
+}
+
+.opencode-quota-percent {
+    font-weight: 600;
+}
+
+.opencode-quota-percent.warning {
+    color: #e5a50a;
+}
+
+.opencode-quota-percent.critical,
+.opencode-quota-percent.exhausted {
+    color: #e01b24;
+}
+
+.opencode-quota-reset {
+    font-size: 11px;
+    color: currentColor;
+    opacity: 0.75;
+}
+
+/* The bar draws its colors from the theme's foreground color; only the
+   warning/critical states are overridden. The custom properties below let
+   users restyle the bar without touching code. */
+.opencode-progress {
+    -opencode-progress-height: 6px;
+    -opencode-progress-width: 180px;
+    -opencode-progress-warning-color: #e5a50a;
+    -opencode-progress-critical-color: #e01b24;
+    min-width: 180px;
+}
+
+.opencode-error-item {
+    color: currentColor;
+    opacity: 0.85;
+}
+
+/* Preferences: subtle status coloring on the API-key status row. */
+.opencode-success {
+    color: #2ec27e;
+}
+
+.opencode-error {
+    color: #e01b24;
+}
