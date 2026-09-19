@@ -294,10 +294,17 @@ export default class OpenCodeGoUsageExtension extends Extension {
         this._buildMenu();
         this._connectSettings();
 
-        // Show cached data immediately, then refresh in the background.
-        this._snapshot = this._cache.load();
+        // Show cached data as soon as it is read, then refresh in the background.
         this._updateIndicator();
         this._renderMenu();
+
+        this._cache.load().then(cached => {
+            if (!this._enabled || !cached || this._snapshot)
+                return;
+            this._snapshot = cached;
+            this._updateIndicator();
+            this._renderMenu();
+        });
 
         this._loadApiKeyAndFetch().catch(error => {
             if (!this._enabled)
@@ -317,10 +324,29 @@ export default class OpenCodeGoUsageExtension extends Extension {
         this._api?.cancel();
         this._api = null;
         this._notifier = null;
+        this._secrets = null;
         this._disconnectSettings();
+
+        for (const item of this._windowItems)
+            item.destroy();
+        this._windowItems = [];
+        this._statusItem?.destroy();
+        this._statusItem = null;
+        this._windowSection?.destroy();
+        this._windowSection = null;
+        this._errorSection?.destroy();
+        this._errorSection = null;
+        this._refreshItem?.destroy();
+        this._refreshItem = null;
+
         this._indicator?.destroy();
         this._indicator = null;
+
         this._settings = null;
+        this._cache = null;
+        this._snapshot = null;
+        this._error = null;
+        this._apiKey = null;
     }
 
     // ------------------------------------------------------------- startup
@@ -398,12 +424,14 @@ export default class OpenCodeGoUsageExtension extends Extension {
     }
 
     _destroyTimers() {
-        for (const id of [this._refreshTimerId, this._countdownTimerId]) {
-            if (id)
-                GLib.source_remove(id);
+        if (this._refreshTimerId) {
+            GLib.source_remove(this._refreshTimerId);
+            this._refreshTimerId = 0;
         }
-        this._refreshTimerId = 0;
-        this._countdownTimerId = 0;
+        if (this._countdownTimerId) {
+            GLib.source_remove(this._countdownTimerId);
+            this._countdownTimerId = 0;
+        }
     }
 
     _onCountdownTick() {

@@ -58,6 +58,17 @@ export default class OpenCodeGoUsagePreferences extends ExtensionPreferences {
         this._secrets = new SecretStore({label: `${this.metadata.name} API key`});
         this._api = new OpenCodeGoApi();
         this._saving = false;
+        this._windowClosing = false;
+
+        window.connect('close-request', () => {
+            this._windowClosing = true;
+            this._api?.cancel();
+            this._api = null;
+            this._secrets = null;
+            this._settings = null;
+            this._keyRow = null;
+            this._statusRow = null;
+        });
 
         const generalPage = new Adw.PreferencesPage({
             title: 'General',
@@ -125,6 +136,8 @@ export default class OpenCodeGoUsagePreferences extends ExtensionPreferences {
     async _loadKeyIntoEntry() {
         try {
             const key = await this._secrets.load();
+            if (this._windowClosing)
+                return;
             if (key)
                 this._keyRow.set_text(key);
         } catch (error) {
@@ -145,24 +158,34 @@ export default class OpenCodeGoUsagePreferences extends ExtensionPreferences {
         this._keyRow.sensitive = false;
         this._setStatus('Testing…', 'busy');
         try {
+            const settings = this._settings;
             await this._secrets.store(value);
-            this._settings.set_int(
-                'credential-revision', this._settings.get_int('credential-revision') + 1);
+            settings.set_int(
+                'credential-revision', settings.get_int('credential-revision') + 1);
         } catch (error) {
+            if (this._windowClosing)
+                return;
             this._setStatus('Could not store the API key in the Secret Service.', 'error');
             this._keyRow.sensitive = true;
             this._saving = false;
             return;
         }
 
+        if (this._windowClosing)
+            return;
+
         try {
             const snapshot = await this._api.getUsage(value);
+            if (this._windowClosing)
+                return;
             const count = snapshot.windows.length;
             const detail = count === 0
                 ? 'The API key is valid, but no usage data was returned.'
                 : `The API key is valid (${count} quota window${count === 1 ? '' : 's'} found).`;
             this._setStatus(`✓ ${detail}`, 'success');
         } catch (error) {
+            if (this._windowClosing)
+                return;
             this._setStatus(`✗ API request failed: ${describeError(error)}`, 'error');
         }
 
@@ -171,6 +194,8 @@ export default class OpenCodeGoUsagePreferences extends ExtensionPreferences {
     }
 
     _setStatus(text, state) {
+        if (this._windowClosing)
+            return;
         this._statusRow.subtitle = text;
         this._statusRow.remove_css_class('opencode-success');
         this._statusRow.remove_css_class('opencode-error');

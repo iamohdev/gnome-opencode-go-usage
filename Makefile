@@ -22,7 +22,7 @@ check:
 		node --experimental-default-type=module --check "$$f"; \
 	done
 	@echo "==> Validating GSettings schema"
-	glib-compile-schemas --strict schemas/
+	glib-compile-schemas --strict --dry-run schemas/
 	@echo "==> OK"
 
 install: check
@@ -42,9 +42,10 @@ uninstall:
 package: check
 	@echo "==> Building $(PACKAGE_ZIP)"
 	rm -rf build dist
-	mkdir -p $(PACKAGE_DIR) dist
-	cp -r extension.js prefs.js stylesheet.css metadata.json lib schemas $(PACKAGE_DIR)/
-	glib-compile-schemas $(PACKAGE_DIR)/schemas/
+	mkdir -p $(PACKAGE_DIR)/schemas dist
+	cp extension.js prefs.js stylesheet.css metadata.json $(PACKAGE_DIR)/
+	cp -r lib $(PACKAGE_DIR)/
+	cp schemas/*.gschema.xml $(PACKAGE_DIR)/schemas/
 	cd $(PACKAGE_DIR) && zip -qr ../$(UUID).shell-extension.zip .
 	mv build/$(UUID).shell-extension.zip dist/
 	rm -rf build
